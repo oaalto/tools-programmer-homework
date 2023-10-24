@@ -25,8 +25,5 @@ the Motorola 68000 Programmer's Reference Manual, available at
 https://www.nxp.com/docs/en/reference-manual/M68000PRM.pdf
 
 A simple testing scaffold is provided for testing and development convenience. You can `cargo run` the scaffold in 
-one terminal and then run `cargo test` in another. You can modify the test and add new ones as desired.
-
-For bonus points: implement the possibility to select target processor architecture and assumed code start address 
-along with the input (you don't have to implement additional architectures unless you _really_ want to. If you 
-do, consider the MOS Technology 6510).
+one terminal to start up the testing web server and then run `cargo test` in another to send a test request to it. 
+You can modify the test and add new ones as desired.
