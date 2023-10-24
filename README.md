@@ -21,6 +21,7 @@ There are some example binaries in the `test-bin/` directory of the source tree 
 can be used for testing.
 
 Information on the Motorola 68000 instruction encoding can be found, for example in section 2 of
+the Motorola 68000 Programmer's Reference Manual, available at 
 https://www.nxp.com/docs/en/reference-manual/M68000PRM.pdf
 
 A simple testing scaffold is provided for testing and development convenience. You can `cargo run` the scaffold in 
