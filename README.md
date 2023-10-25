@@ -27,3 +27,14 @@ https://www.nxp.com/docs/en/reference-manual/M68000PRM.pdf
 A simple testing scaffold is provided for testing and development convenience. You can `cargo run` the scaffold in 
 one terminal to start up the testing web server and then run `cargo test` in another to send a test request to it. 
 You can modify the existing test and add new ones as desired.
+
+You can spend as much time as you feel is required for a baseline implementation. The idea is not to find out if you 
+can read the PRG and implement instruction decoding - we can assume this is the case. If you can find a way to produce 
+proper disassembly from the binary data without implementing a full disassembler, feel free to do so! 
+
+Incomplete solutions are also better than nothing! Don't worry if you don't have time to implement all instructions or
+are missing some 68030 specific or undocumented ones! If you find the task to be unexpectedly difficult, don't worry!
+If you can provide some initial code and are prepared to explain your implementation idea, that is fine as well.
+
+Don't hesitate to use pseudocode in longer-running sections - 680x0 instruction decoding is simple on the surface but
+can have a lot of non-obvious gotchas.
