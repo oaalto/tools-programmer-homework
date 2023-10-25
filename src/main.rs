@@ -14,7 +14,7 @@ async fn main() {
     let routes = Router::new().route("/", post(handler));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 9999));
-    info!("{:<12} - {addr}\n", "LISTENING");
+    info!("{:<15} - {addr}\n", "LISTENING");
     axum::Server::bind(&addr)
         .serve(routes.into_make_service())
         .await
@@ -27,7 +27,7 @@ struct Payload {
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
-struct Output { 
+struct Output {
     disassembly: Vec<String>,
 }
 
@@ -38,10 +38,17 @@ async fn handler(Json(payload): Json<Payload>) -> Response {
 }
 
 fn disassemble(_data: Vec<u8>) -> Output {
-    // process the incoming data here
-    
-        Output { disassembly: ["0x00000000 48e7 2020   MOVEM.L D5,A5,-(A7)","0x00000004 7021        MOVEQ #$21, D0"].iter().map(|&s| s.into()).collect() }
-    
+    // process the incoming data here and return type Output
+
+    Output {
+        disassembly: [
+            "0x00000000 48e7 2020   MOVEM.L D5,A5,-(A7)",
+            "0x00000004 7021        MOVEQ #$21, D0",
+        ]
+        .iter()
+        .map(|&s| s.into())
+        .collect(),
+    }
 }
 
 #[cfg(test)]
@@ -52,7 +59,9 @@ mod tests {
         const URL: &'static str = "http://localhost:9999/";
         let client = reqwest::Client::builder().build().unwrap();
 
-        let payload = Payload { data: [0xe7, 0x48, 0x20, 0x20, 0x21, 0x70].to_vec() };
+        let payload = Payload {
+            data: [0xe7, 0x48, 0x20, 0x20, 0x21, 0x70].to_vec(),
+        };
 
         let res: Output = client
             .post(URL)
@@ -62,9 +71,17 @@ mod tests {
             .unwrap()
             .json()
             .await
-            .unwrap(); 
+            .unwrap();
 
-        let expected: Output = Output { disassembly: ["0x00000000 48e7 2020   MOVEM.L D5,A5,-(A7)", "0x00000004 7021        MOVEQ #$21, D0"].iter().map(|&s| s.into()).collect() };
+        let expected: Output = Output {
+            disassembly: [
+                "0x00000000 48e7 2020   MOVEM.L D5,A5,-(A7)",
+                "0x00000004 7021        MOVEQ #$21, D0",
+            ]
+            .iter()
+            .map(|&s| s.into())
+            .collect(),
+        };
         assert_eq!(expected, res);
     }
 }
