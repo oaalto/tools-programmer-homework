@@ -4,14 +4,14 @@ Your mission: implement a web service that takes in a set of bytes as input and 
 family disassembly of those bytes as output. For example, assuming the following input bytes:
 
 ````
-e7 48 20 20 21 70 21 
+48 e7 20 20 70 21
 ````
 
 The following output (or similar) should be produced:
 
 ````
 0x00000000 48e7 2020   MOVEM.L D5,A5,-(A7)
-0x00000004 7021        MOVEQ #$21, D0
+0x00000004 2170        MOVEQ #$21, D0
 ````
 
 You can, based on your own preferences, change the format of the output, but the origin address and bytes used in
