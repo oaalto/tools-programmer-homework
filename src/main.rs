@@ -1,12 +1,10 @@
-
 use axum::{
     response::{IntoResponse, Response},
     routing::post,
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-use std::net::SocketAddr;
-use std::ops::Add;
+use tokio::net::TcpListener;
 use tracing::info;
 
 #[tokio::main]
@@ -15,10 +13,10 @@ async fn main() {
 
     let routes = Router::new().route("/", post(handler));
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 9999));
-    info!("{:<15} - {addr}\n", "LISTENING");
-    axum::Server::bind(&addr)
-        .serve(routes.into_make_service())
+    let addr = format!("127.0.0.1:{}", 9999);
+    let listener = TcpListener::bind(addr).await.unwrap();
+    info!("{:<15} - {:?}\n", "LISTENING", listener.local_addr());
+    axum::serve(listener, routes.into_make_service())
         .await
         .unwrap();
 }
@@ -44,10 +42,9 @@ fn disassemble(_data: Vec<u8>) -> Output {
 
     Output {
         disassembly: [
-
-            "0x0000 a9 bd        LDA #$bd", 
-            "0x0002 a0 bd        LDY #$bd", 
-            "0x0004 20 28 ba     JSR $ba28"
+            "0x0000 a9 bd        LDA #$bd",
+            "0x0002 a0 bd        LDY #$bd",
+            "0x0004 20 28 ba     JSR $ba28",
         ]
         .iter()
         .map(|&s| s.into())
@@ -60,7 +57,7 @@ mod tests {
     use super::*;
     #[tokio::test]
     async fn test_api_disassemble_ok() {
-        const URL: &'static str = "http://localhost:9999/";
+        const URL: &str = "http://localhost:9999/";
         let client = reqwest::Client::builder().build().unwrap();
 
         let payload = Payload {
@@ -81,7 +78,7 @@ mod tests {
             disassembly: [
                 "0x0000 a9 bd        LDA #$bd",
                 "0x0002 a0 bd        LDY #$bd",
-                "0x0004 20 28 ba     JSR $ba28"
+                "0x0004 20 28 ba     JSR $ba28",
             ]
             .iter()
             .map(|&s| s.into())
