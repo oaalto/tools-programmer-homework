@@ -1,6 +1,9 @@
-use crate::line::Line;
-use crate::opcodes::{opcodes, unknown_op_code};
+use crate::model::disassembler::line::Line;
+use crate::model::disassembler::opcodes::{opcodes, unknown_op_code};
 use std::mem;
+
+mod line;
+mod opcodes;
 
 enum State {
     ReadOpCode,
@@ -39,7 +42,7 @@ impl Disassembler {
         self.current_line.memory_location = self.current_memory_location;
     }
 
-    pub fn disassemble(data: Vec<u8>) -> Vec<String> {
+    pub fn disassemble(data: &[u8]) -> Vec<String> {
         let disassembler = data
             .iter()
             .fold(Disassembler::new(), |mut disassembler, b| {
