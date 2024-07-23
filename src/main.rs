@@ -1,15 +1,14 @@
+mod disassembler;
 mod line;
 mod opcodes;
 
-use crate::line::Line;
-use crate::opcodes::{opcodes, unknown_op_code};
+use crate::disassembler::Disassembler;
 use axum::{
     response::{IntoResponse, Response},
     routing::post,
     Json, Router,
 };
 use serde::{Deserialize, Serialize};
-use std::mem;
 use tokio::net::TcpListener;
 use tracing::info;
 
@@ -39,70 +38,9 @@ struct Output {
 
 async fn handler(Json(payload): Json<Payload>) -> Response {
     let Payload { data } = payload;
-    let res = disassemble(data);
-    Json(res).into_response()
-}
-
-enum State {
-    ReadOpCode,
-    ReadByte,
-}
-
-struct Disassembler {
-    current_memory_location: u64,
-    lines: Vec<Line>,
-    current_line: Line,
-    state: State,
-}
-
-impl Disassembler {
-    pub fn new() -> Self {
-        Self {
-            current_memory_location: 0,
-            lines: vec![],
-            current_line: Line::new(0),
-            state: State::ReadOpCode,
-        }
-    }
-}
-
-fn disassemble(data: Vec<u8>) -> Output {
-    // process the incoming data here and return type Output
-
-    let disassembler = data
-        .iter()
-        .fold(Disassembler::new(), |mut disassembler, b| {
-            match disassembler.state {
-                State::ReadOpCode => {
-                    disassembler
-                        .current_line
-                        .set_op_code(opcodes().get(b).unwrap_or(unknown_op_code()).clone());
-
-                    disassembler.current_line.set_op_code_byte(*b);
-                    disassembler.state = State::ReadByte;
-                }
-                State::ReadByte => disassembler.current_line.add_byte(*b),
-            }
-
-            disassembler.current_memory_location += 1;
-
-            if disassembler.current_line.bytes.len()
-                == disassembler.current_line.op_code.num_bytes as usize
-            {
-                disassembler
-                    .lines
-                    .push(mem::take(&mut disassembler.current_line));
-
-                disassembler.current_line.memory_location = disassembler.current_memory_location;
-                disassembler.state = State::ReadOpCode;
-            }
-
-            disassembler
-        });
-
-    Output {
-        disassembly: disassembler.lines.iter().map(ToString::to_string).collect(),
-    }
+    let res = Disassembler::disassemble(data);
+    let output = Output { disassembly: res };
+    Json(output).into_response()
 }
 
 #[cfg(test)]
