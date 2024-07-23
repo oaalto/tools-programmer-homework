@@ -1,9 +1,6 @@
-mod handler;
-mod middleware;
-mod model;
-
 use axum::{routing::post, Router};
 use tokio::net::TcpListener;
+use tools_programmer_homework::{handler, middleware};
 use tracing::info;
 
 #[tokio::main]

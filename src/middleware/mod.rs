@@ -1,3 +1,3 @@
 mod disassembler;
 
-pub use disassembler::disassembler;
+pub use disassembler::*;
