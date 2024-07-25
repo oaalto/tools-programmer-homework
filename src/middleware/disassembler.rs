@@ -19,7 +19,7 @@ pub async fn disassembler(request: Request, next: Next) -> Result<impl IntoRespo
         .to_bytes();
 
     let json: Json<Payload> = Json::from_bytes(&bytes)
-        .map_err(|err| (StatusCode::INTERNAL_SERVER_ERROR, err.to_string()).into_response())?;
+        .map_err(|err| (StatusCode::BAD_REQUEST, err.to_string()).into_response())?;
 
     let mut disassembler = disassembler::get_disassembler_for_architecture(json.0.architecture);
     let res = disassembler.disassemble(&json.0.data);
