@@ -17,6 +17,9 @@ pub struct Disassembler {
     state: State,
 }
 
+#[derive(Clone)]
+pub struct DisassemblyResult(pub(crate) Vec<String>);
+
 impl Disassembler {
     fn new() -> Self {
         Self {
@@ -42,7 +45,7 @@ impl Disassembler {
         self.current_line.memory_location = self.current_memory_location;
     }
 
-    pub fn disassemble(data: &[u8]) -> Vec<String> {
+    pub fn disassemble(data: &[u8]) -> DisassemblyResult {
         let disassembler = data
             .iter()
             .fold(Disassembler::new(), |mut disassembler, b| {
@@ -65,6 +68,8 @@ impl Disassembler {
                 disassembler
             });
 
-        disassembler.lines.iter().map(ToString::to_string).collect()
+        let lines: Vec<String> = disassembler.lines.iter().map(ToString::to_string).collect();
+
+        DisassemblyResult(lines)
     }
 }
