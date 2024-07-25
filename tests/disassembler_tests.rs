@@ -1,6 +1,7 @@
 use std::fs;
 use tools_programmer_homework::handler::Output;
 use tools_programmer_homework::middleware::Payload;
+use tools_programmer_homework::model::disassembler::Architecture;
 
 #[tokio::test]
 async fn test_api_disassemble_ok() {
@@ -9,6 +10,7 @@ async fn test_api_disassemble_ok() {
 
     let payload = Payload {
         data: [0xa9, 0xbd, 0xa0, 0xbd, 0x20, 0x28, 0xba].to_vec(),
+        architecture: Architecture::Mos6502,
     };
 
     let res: Output = client
@@ -41,7 +43,10 @@ async fn test_api_disassemble_file1() {
 
     let contents = fs::read("test-bin/test1.bin").unwrap();
 
-    let payload = Payload { data: contents };
+    let payload = Payload {
+        data: contents,
+        architecture: Architecture::Mos6502,
+    };
 
     let res: Output = client
         .post(URL)

@@ -1,4 +1,4 @@
-use crate::model::disassembler::opcodes::{unknown_op_code, OpCode};
+use crate::model::disassembler::mos6502::opcodes::{unknown_op_code, OpCode};
 use std::fmt::{Display, Formatter};
 
 #[derive(Default)]
