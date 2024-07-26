@@ -1,5 +1,5 @@
 use crate::model::disassembler;
-use crate::model::disassembler::{Architecture, Disassembler};
+use crate::model::disassembler::Architecture;
 use axum::body::Body;
 use axum::extract::Request;
 use axum::http::StatusCode;
@@ -21,8 +21,7 @@ pub async fn disassembler(request: Request, next: Next) -> Result<impl IntoRespo
     let json: Json<Payload> = Json::from_bytes(&bytes)
         .map_err(|err| (StatusCode::BAD_REQUEST, err.to_string()).into_response())?;
 
-    let disassembler = disassembler::get_disassembler_for_architecture(json.0.architecture);
-    let res = disassembler.disassemble(&json.0.data);
+    let res = disassembler::disassemble(json.0.architecture, &json.0.data);
 
     let mut request = Request::from_parts(parts, Body::empty());
     request.extensions_mut().insert(res);

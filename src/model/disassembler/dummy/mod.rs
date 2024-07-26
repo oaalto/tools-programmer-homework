@@ -1,5 +1,5 @@
-use crate::model::disassembler::mos6502::line::Line;
-use crate::model::disassembler::mos6502::opcodes::{opcodes, unknown_op_code};
+use crate::model::disassembler::dummy::line::Line;
+use crate::model::disassembler::dummy::opcodes::{opcodes, unknown_op_code};
 use crate::model::disassembler::DisassemblyResult;
 use std::mem;
 
@@ -9,7 +9,7 @@ mod opcodes;
 pub fn disassemble(data: &[u8]) -> DisassemblyResult {
     let disassembler = data
         .iter()
-        .fold(Mos6502DisassemblerData::new(), |mut disassembler, b| {
+        .fold(DummyDisassemblerData::new(), |mut disassembler, b| {
             match disassembler.state {
                 State::ReadOpCode => {
                     disassembler.set_opcode_for_current_line(*b);
@@ -39,14 +39,14 @@ enum State {
     ReadByte,
 }
 
-struct Mos6502DisassemblerData {
+struct DummyDisassemblerData {
     current_memory_location: u64,
     lines: Vec<Line>,
     current_line: Line,
     state: State,
 }
 
-impl Mos6502DisassemblerData {
+impl DummyDisassemblerData {
     fn new() -> Self {
         Self {
             current_memory_location: 0,
