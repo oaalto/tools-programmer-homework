@@ -6,19 +6,51 @@ use std::mem;
 mod line;
 mod opcodes;
 
+pub struct Mos6502Disassembler;
+
+impl Disassembler for Mos6502Disassembler {
+    fn disassemble(&self, data: &[u8]) -> DisassemblyResult {
+        let disassembler =
+            data.iter()
+                .fold(Mos6502DisassemblerData::new(), |mut disassembler, b| {
+                    match disassembler.state {
+                        State::ReadOpCode => {
+                            disassembler.set_opcode_for_current_line(*b);
+
+                            disassembler.state = State::ReadByte;
+                        }
+                        State::ReadByte => disassembler.current_line.add_byte(*b),
+                    }
+
+                    disassembler.current_memory_location += 1;
+
+                    if disassembler.current_line_finished() {
+                        disassembler.save_current_line();
+                        disassembler.state = State::ReadOpCode;
+                    }
+
+                    disassembler
+                });
+
+        let lines: Vec<String> = disassembler.lines.iter().map(ToString::to_string).collect();
+
+        DisassemblyResult(lines)
+    }
+}
+
 enum State {
     ReadOpCode,
     ReadByte,
 }
 
-pub struct Mos6502Disassembler {
+pub struct Mos6502DisassemblerData {
     current_memory_location: u64,
     lines: Vec<Line>,
     current_line: Line,
     state: State,
 }
 
-impl Mos6502Disassembler {
+impl Mos6502DisassemblerData {
     pub fn new() -> Self {
         Self {
             current_memory_location: 0,
@@ -41,33 +73,5 @@ impl Mos6502Disassembler {
     fn save_current_line(&mut self) {
         self.lines.push(mem::take(&mut self.current_line));
         self.current_line.memory_location = self.current_memory_location;
-    }
-}
-
-impl Disassembler for Mos6502Disassembler {
-    fn disassemble(&mut self, data: &[u8]) -> DisassemblyResult {
-        let disassembler = data.iter().fold(self, |disassembler, b| {
-            match disassembler.state {
-                State::ReadOpCode => {
-                    disassembler.set_opcode_for_current_line(*b);
-
-                    disassembler.state = State::ReadByte;
-                }
-                State::ReadByte => disassembler.current_line.add_byte(*b),
-            }
-
-            disassembler.current_memory_location += 1;
-
-            if disassembler.current_line_finished() {
-                disassembler.save_current_line();
-                disassembler.state = State::ReadOpCode;
-            }
-
-            disassembler
-        });
-
-        let lines: Vec<String> = disassembler.lines.iter().map(ToString::to_string).collect();
-
-        DisassemblyResult(lines)
     }
 }

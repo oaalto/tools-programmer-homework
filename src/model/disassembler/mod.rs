@@ -6,7 +6,7 @@ mod mos6502;
 pub struct DisassemblyResult(pub(crate) Vec<String>);
 
 pub trait Disassembler {
-    fn disassemble(&mut self, data: &[u8]) -> DisassemblyResult;
+    fn disassemble(&self, data: &[u8]) -> DisassemblyResult;
 }
 
 #[derive(Default, Debug, Deserialize, Serialize)]
@@ -18,6 +18,6 @@ pub enum Architecture {
 
 pub fn get_disassembler_for_architecture(arch: Architecture) -> impl Disassembler {
     match arch {
-        Architecture::Mos6502 => mos6502::Mos6502Disassembler::new(),
+        Architecture::Mos6502 => mos6502::Mos6502Disassembler,
     }
 }
