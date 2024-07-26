@@ -1,7 +1,10 @@
+mod opcode;
+
 use crate::model::disassembler::line::Line;
-use crate::model::disassembler::opcodes::{opcodes, unknown_op_code};
-use crate::model::disassembler::DisassemblyResult;
+use crate::model::disassembler::{opcodes, Architecture, DisassemblyResult};
 use std::mem;
+
+pub use opcode::get_opcode;
 
 pub fn disassemble(data: &[u8]) -> DisassemblyResult {
     let disassembler = data
@@ -54,12 +57,12 @@ impl Mos6502DisassemblerData {
     }
 
     fn current_line_finished(&self) -> bool {
-        self.current_line.bytes.len() == self.current_line.op_code.num_bytes as usize
+        self.current_line.bytes.len() == self.current_line.op_code.num_bytes() as usize
     }
 
     fn set_opcode_for_current_line(&mut self, opcode: u8) {
         self.current_line
-            .set_op_code(opcodes().get(&opcode).unwrap_or(unknown_op_code()).clone());
+            .set_op_code(opcodes::get_opcode(&Architecture::Mos6502, opcode).clone());
         self.current_line.set_op_code_byte(opcode);
     }
 
