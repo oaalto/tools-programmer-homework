@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
 
 mod dummy;
+mod line;
 mod mos6502;
+mod opcodes;
 
 #[derive(Clone)]
 pub struct DisassemblyResult(pub(crate) Vec<String>);

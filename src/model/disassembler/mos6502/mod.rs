@@ -1,10 +1,7 @@
-use crate::model::disassembler::mos6502::line::Line;
-use crate::model::disassembler::mos6502::opcodes::{opcodes, unknown_op_code};
+use crate::model::disassembler::line::Line;
+use crate::model::disassembler::opcodes::{opcodes, unknown_op_code};
 use crate::model::disassembler::DisassemblyResult;
 use std::mem;
-
-mod line;
-mod opcodes;
 
 pub fn disassemble(data: &[u8]) -> DisassemblyResult {
     let disassembler = data
