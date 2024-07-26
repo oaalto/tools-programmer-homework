@@ -15,7 +15,7 @@ impl Line {
             memory_location,
             bytes: vec![],
             op_code_byte: 0,
-            op_code: unknown_op_code().clone(),
+            op_code: unknown_op_code(),
         }
     }
 

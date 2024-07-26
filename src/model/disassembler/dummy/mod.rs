@@ -1,10 +1,8 @@
-mod opcode;
+mod opcodes;
 
 use crate::model::disassembler::line::Line;
-use crate::model::disassembler::{opcodes, Architecture, DisassemblyResult};
+use crate::model::disassembler::DisassemblyResult;
 use std::mem;
-
-pub use opcode::get_opcode;
 
 pub fn disassemble(data: &[u8]) -> DisassemblyResult {
     let disassembler = data
@@ -61,8 +59,7 @@ impl DummyDisassemblerData {
     }
 
     fn set_opcode_for_current_line(&mut self, opcode: u8) {
-        self.current_line
-            .set_op_code(opcodes::get_opcode(&Architecture::Dummy, opcode).clone());
+        self.current_line.set_op_code(opcodes::get_opcode(opcode));
         self.current_line.set_op_code_byte(opcode);
     }
 
