@@ -43,7 +43,7 @@ enum State {
     ReadByte,
 }
 
-pub struct Mos6502DisassemblerData {
+struct Mos6502DisassemblerData {
     current_memory_location: u64,
     lines: Vec<Line>,
     current_line: Line,
@@ -51,7 +51,7 @@ pub struct Mos6502DisassemblerData {
 }
 
 impl Mos6502DisassemblerData {
-    pub fn new() -> Self {
+    fn new() -> Self {
         Self {
             current_memory_location: 0,
             lines: vec![],
