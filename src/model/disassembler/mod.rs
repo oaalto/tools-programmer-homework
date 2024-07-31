@@ -18,6 +18,7 @@ pub enum Architecture {
     Dummy,
 }
 
+/// Disassemble the given data based on the given architecture.
 pub fn disassemble(arch: Architecture, data: &[u8]) -> DisassemblyResult {
     match arch {
         Architecture::Mos6502 => mos6502::disassemble(data),

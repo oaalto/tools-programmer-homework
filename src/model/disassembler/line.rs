@@ -1,15 +1,17 @@
 use crate::model::disassembler::opcodes::{unknown_op_code, OpCode};
 use std::fmt::{Display, Formatter};
 
+/// Line keeps track of a single instruction line.
 #[derive(Default)]
 pub struct Line {
-    pub memory_location: u64,
-    pub bytes: Vec<u8>,
-    pub op_code_byte: u8,
-    pub op_code: OpCode,
+    memory_location: u64,
+    bytes: Vec<u8>,
+    op_code_byte: u8,
+    op_code: OpCode,
 }
 
 impl Line {
+    /// Create a new Line starting at the given memory location.
     pub fn new(memory_location: u64) -> Self {
         Self {
             memory_location,
@@ -17,6 +19,14 @@ impl Line {
             op_code_byte: 0,
             op_code: unknown_op_code(),
         }
+    }
+
+    pub fn get_bytes(&self) -> &Vec<u8> {
+        &self.bytes
+    }
+
+    pub fn get_opcode(&self) -> &OpCode {
+        &self.op_code
     }
 
     pub fn add_byte(&mut self, b: u8) {

@@ -4,6 +4,7 @@ use crate::model::disassembler::line::Line;
 use crate::model::disassembler::DisassemblyResult;
 use std::mem;
 
+/// Disassemble the given data as a MOS 6502 instruction set.
 pub fn disassemble(data: &[u8]) -> DisassemblyResult {
     let disassembler = data
         .iter()
@@ -55,7 +56,7 @@ impl Mos6502DisassemblerData {
     }
 
     fn current_line_finished(&self) -> bool {
-        self.current_line.bytes.len() == self.current_line.op_code.num_bytes() as usize
+        self.current_line.get_bytes().len() == self.current_line.get_opcode().num_bytes() as usize
     }
 
     fn set_opcode_for_current_line(&mut self, opcode: u8) {
@@ -64,7 +65,9 @@ impl Mos6502DisassemblerData {
     }
 
     fn save_current_line(&mut self) {
-        self.lines.push(mem::take(&mut self.current_line));
-        self.current_line.memory_location = self.current_memory_location;
+        self.lines.push(mem::replace(
+            &mut self.current_line,
+            Line::new(self.current_memory_location),
+        ));
     }
 }
