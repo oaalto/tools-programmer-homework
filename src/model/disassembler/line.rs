@@ -41,7 +41,7 @@ impl Line {
         self.op_code = op_code;
     }
 
-    pub fn format_bytes(&self) -> String {
+    fn format_bytes(&self) -> String {
         self.bytes
             .iter()
             .map(|b| format!("{:02x}", b))
